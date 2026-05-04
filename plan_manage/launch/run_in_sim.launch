@@ -1,0 +1,127 @@
+<launch>
+  <!-- size of map, change the size inflate x, y, z according to your application -->
+  <arg name="map_size_x" value="200"/>
+  <arg name="map_size_y" value="200"/>
+  <arg name="map_size_z" value="30"/>
+  <arg name="init_x"/>
+  <arg name="init_y"/>
+  <arg name="init_z"/>
+
+  <arg name="drone_id" value="0"/>
+
+  <!-- topic of your odometry such as VIO or LIO -->
+  <arg name="odom_topic" value="/airsim_node/drone_0/odom_local_enu"/>
+
+  <!-- number of moving objects -->
+  <arg name="obj_num" value="0" />
+
+  <!-- transfer depth image to pointcloud -->
+  <!-- <include file="$(find ego_planner)/launch/depth_to_pointcloud_fusion.launch"/> -->
+
+  <!-- main algorithm params -->
+  <include file="$(find ego_planner)/launch/advanced_param.xml">
+
+    <arg name="drone_id" value="$(arg drone_id)"/>
+
+    <arg name="map_size_x_" value="$(arg map_size_x)"/>
+    <arg name="map_size_y_" value="$(arg map_size_y)"/>
+    <arg name="map_size_z_" value="$(arg map_size_z)"/>
+    <arg name="odometry_topic" value="$(arg odom_topic)"/>
+
+    <arg name="obj_num_set" value="$(arg obj_num)" />
+
+    <!-- camera pose: transform of camera frame in the world frame -->
+    <!-- depth topic: depth image, 640x480 by default -->
+    <!-- don't set cloud_topic if you already set these ones! -->
+    <arg name="camera_pose_topic" value="dummy/camera_pose"/>
+    <arg name="depth_topic" value="dummy/depth_topic"/>
+
+    <!-- topic of point cloud measurement, such as from LIDAR  -->
+    <!-- don't set camera pose and depth, if you already set this one! -->
+    <arg name="cloud_topic" value="/cloud_concatenated"/>
+
+    <!-- intrinsic params of the depth camera -->
+    <arg name="cx" value="320.0"/>
+    <arg name="cy" value="240.0"/>
+    <arg name="fx" value="320.0"/>
+    <arg name="fy" value="320.0"/>
+
+    <!-- maximum velocity and acceleration the drone will reach -->
+    <arg name="max_vel" value="6.0" />
+    <arg name="max_acc" value="3.0" />
+
+    <!--always set to 1.5 times grater than sensing horizen-->
+    <arg name="planning_horizon" value="15" /> 
+
+    <arg name="use_distinctive_trajs" value="true" />
+
+    <!-- 1: use 2D Nav Goal to select goal  -->
+    <!-- 2: use global waypoints below  -->
+    <arg name="flight_type" value="1" />
+    
+    <!-- global waypoints -->
+    <!-- It generates a piecewise min-snap traj passing all waypoints -->
+    <arg name="point_num" value="11" />
+
+    <arg name="point0_x" value="-18.5" />
+    <arg name="point0_y" value="37.0" />
+    <arg name="point0_z" value="5.0" />
+
+    <arg name="point1_x" value="-47.5" />
+    <arg name="point1_y" value="56.0" />
+    <arg name="point1_z" value="5.0" />
+
+    <arg name="point2_x" value="-38.5" />
+    <arg name="point2_y" value="2.0" />
+    <arg name="point2_z" value="5.0" />
+
+    <arg name="point3_x" value="0.0" />
+    <arg name="point3_y" value="-1.5" />
+    <arg name="point3_z" value="5.0" />
+
+    <arg name="point4_x" value="44.0" />
+    <arg name="point4_y" value="-15.0" />
+    <arg name="point4_z" value="5.0" />
+
+    <arg name="point5_x" value="27.0" />
+    <arg name="point5_y" value="-45.5" />
+    <arg name="point5_z" value="5.0" />
+
+    <arg name="point6_x" value="13.5" />
+    <arg name="point6_y" value="-69.0" />
+    <arg name="point6_z" value="5.0" />
+
+    <arg name="point7_x" value="-2.0" />
+    <arg name="point7_y" value="-72.5" />
+    <arg name="point7_z" value="5.0" />
+
+    <arg name="point8_x" value="13.5" />
+    <arg name="point8_y" value="-69.0" />
+    <arg name="point8_z" value="5.0" />
+
+    <arg name="point9_x" value="14.0" />
+    <arg name="point9_y" value="-23.5" />
+    <arg name="point9_z" value="5.0" />
+
+    <arg name="point10_x" value="0.0" />
+    <arg name="point10_y" value="0.0" />
+    <arg name="point10_z" value="5.0" />
+    
+  </include>
+
+  <!-- trajectory server -->
+  <node pkg="ego_planner" name="drone_$(arg drone_id)_traj_server" type="traj_server" output="screen">
+    <remap from="position_cmd" to="drone_$(arg drone_id)_planning/pos_cmd"/>
+    <remap from="~planning/bspline" to="drone_$(arg drone_id)_planning/bspline"/>
+
+    <param name="traj_server/time_forward" value="1.0" type="double"/>
+  </node>
+
+  <!--node pkg="waypoint_generator" name="waypoint_generator" type="waypoint_generator" output="screen">
+    <remap from="~odom" to="$(arg odom_topic)"/>        
+    <remap from="~goal" to="/move_base_simple/goal"/>
+    <remap from="~traj_start_trigger" to="/traj_start_trigger" />
+    <param name="waypoint_type" value="manual-lonely-waypoint"/>    
+  </node-->
+
+</launch>
