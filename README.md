@@ -15,6 +15,32 @@ This repository provides a ROS-based solution for integrating Microsoft AirSim w
 Follow the official instructions to install the AirSim ROS environment:
 [AirSim ROS Packages Documentation](https://microsoft.github.io/AirSim/airsim_ros_pkgs/)
 
+Change the AirSim/ros/src/airsim_ros_pkgs/launch/airsim_node.launch to this:
+```json
+<launch>
+	<param name="use_sim_time" value="true"/>
+	<arg name="output" default="screen"/>
+	<arg name="publish_clock" default="false"/>
+	<arg name="is_vulkan" default="true"/>
+	<arg name="host" default="localhost" />
+
+	<node name="airsim_clock_publisher" pkg="ego_planner" type="airsim_clock_publisher.py" output="screen" />
+
+	<node name="airsim_node" pkg="airsim_ros_pkgs" type="airsim_node" output="$(arg output)">
+		<param name="is_vulkan" type="bool" value="false" /> 
+		<!-- ROS timer rates. Note that timer callback will be processed at maximum possible rate, upperbounded by the following ROS params -->
+		<param name="update_airsim_img_response_every_n_sec" type="double" value="0.05" /> 
+		<param name="update_airsim_control_every_n_sec" type="double" value="0.01" />
+		<param name="update_lidar_every_n_sec" type="double" value="0.01" />
+		<param name="publish_clock" type="bool" value="$(arg publish_clock)" />
+		<param name="host_ip" type="string" value="$(arg host)" />
+	</node>
+
+	<!-- Static transforms -->
+	<include file="$(find airsim_ros_pkgs)/launch/static_transforms.launch"/>
+</launch>
+```
+
 ### 2. Workspace Setup
 Create a new workspace (or navigate to your existing one) and clone the necessary repositories into the `src` directory:
 
@@ -43,7 +69,7 @@ To handle the multi-depth image setup, you must update the `pointcloud_concatena
 
 Modify `src/pointcloud_concatenate/launch/concat.launch` with the following configuration:
 
-```xml
+```json
 <launch>
   <arg name="target_frame"/>
   <arg name="hz"/>
@@ -89,6 +115,7 @@ Before launching, update your `settings.json` (typically located in `~/Documents
 {
   "SettingsVersion": 1.2,
   "SimMode": "Multirotor",
+  "ClockSpeed": 0.0667,
   "LocalHostIp": "0.0.0.0",
   "Vehicles": {
     "drone_0": {
@@ -154,24 +181,19 @@ AirsimROSWrapper Initialized!
 *Note: If the terminal hangs at `Connected!` and doesn't show `Initialized!`, check if another AirSim process is running in the background.*
 
 ### 3. Launch Communication Bridge & Pointcloud Fusion
-These two can be launched together. The bridge will trigger the drone to **take off** immediately. The fusion node will combine the 4 depth images and automatically open **RViz**.
+The bridge will trigger the drone to **take off**. The fusion node will combine the 4 depth images and automatically open **RViz**.
 
 **Terminal 3 (Bridge):**
 ```bash
-rosrun ego_planner ego_to_airsim_bridge.py
-```
-
-**Terminal 4 (Fusion):**
-```bash
-roslaunch ego_planner depth_to_pointcloud_fusion.launch
+roslaunch ego_planner airsim_preparation.launch 
 ```
 
 ### 4. Final Planner Launch
 **Wait!** Before running this final command, verify:
-1. The bridge terminal displays: `Ego-planner to Airsim Bridge Started`.
+1. The preparation terminal displays: `Ego-planner to Airsim Bridge Started`.
 2. RViz is open and the pointcloud is visible.
 
-**Terminal 5 (Planner):**
+**Terminal 4 (Planner):**
 Once verified, run:
 ```bash
 roslaunch ego_planner run_in_sim.launch

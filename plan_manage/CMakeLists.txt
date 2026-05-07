@@ -55,6 +55,7 @@ target_link_libraries(traj_server ${catkin_LIBRARIES})
 
 catkin_install_python(PROGRAMS
   scripts/ego_to_airsim_bridge.py
+  scripts/airsim_clock_publisher.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 

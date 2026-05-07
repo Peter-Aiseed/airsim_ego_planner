@@ -1,4 +1,6 @@
 <launch>
+    <node pkg="ego_planner" name="ego_to_airsim_bridge" type="ego_to_airsim_bridge.py" output="screen"/>
+    
     <node pkg="nodelet" type="nodelet" args="manager" name="depth_to_pointcloud_manager" output="screen"/>
 
     <node pkg="nodelet" type="nodelet" name="front_depth2cloud" args="load depth_image_proc/point_cloud_xyz depth_to_pointcloud_manager" output="screen">

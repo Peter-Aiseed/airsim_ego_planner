@@ -142,7 +142,7 @@ Visualization Manager:
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
-        Max Value: 9.364999771118164
+        Max Value: 9.864999771118164
         Min Value: 0.36500000953674316
         Value: true
       Axis: Z
@@ -194,26 +194,25 @@ Visualization Manager:
   Value: true
   Views:
     Current:
-      Class: rviz/Orbit
-      Distance: 179.7442626953125
+      Class: rviz/FrameAligned
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
-      Field of View: 0.7853981852531433
-      Focal Point:
-        X: -1.9494776725769043
-        Y: -12.911537170410156
-        Z: -9.701410293579102
-      Focal Shape Fixed Size: true
-      Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
+      Lock Camera: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 1.0947962999343872
-      Target Frame: <Fixed Frame>
-      Yaw: 4.715853214263916
+      Pitch: -2.5400068759918213
+      Point towards: arbitrary
+      Position:
+        X: -0.581674337387085
+        Y: -36.928504943847656
+        Z: -26.675355911254883
+      Roll: 0
+      Target Frame: drone_0/odom_local_ned
+      Yaw: -1.5792040824890137
     Saved: ~
 Window Geometry:
   Displays:
@@ -231,5 +230,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 1908
-  X: 0
-  Y: 125
+  X: -32
+  Y: 93
