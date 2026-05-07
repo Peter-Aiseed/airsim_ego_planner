@@ -16,7 +16,7 @@ Follow the official instructions to install the AirSim ROS environment:
 [AirSim ROS Packages Documentation](https://microsoft.github.io/AirSim/airsim_ros_pkgs/)
 
 Change the AirSim/ros/src/airsim_ros_pkgs/launch/airsim_node.launch to this:
-```json
+```
 <launch>
 	<param name="use_sim_time" value="true"/>
 	<arg name="output" default="screen"/>
@@ -69,7 +69,7 @@ To handle the multi-depth image setup, you must update the `pointcloud_concatena
 
 Modify `src/pointcloud_concatenate/launch/concat.launch` with the following configuration:
 
-```json
+```
 <launch>
   <arg name="target_frame"/>
   <arg name="hz"/>
